@@ -1,4 +1,5 @@
-﻿using Microsoft.Dynamics.Commerce.Runtime.DataModel;
+﻿using Microsoft.Dynamics.Commerce.Runtime;
+using Microsoft.Dynamics.Commerce.Runtime.DataModel;
 using Microsoft.Dynamics.Retail.RetailServerLibrary;
 using System.Runtime.InteropServices;
 
@@ -22,16 +23,35 @@ namespace Retail.Server.Extensions.Example.WebApiExtension
         }
 
         /// <summary>
-        /// Lookup a barcode using the ProductController.
+        /// Gets the adjusted price for the specified itemId.
         /// </summary>
-        /// <param name="barcode">The barcode to lookup.</param>
-        /// <returns>An instnce of <c>Barcode</c>.</returns>
-        public Barcode Get(string barcode)
+        /// <param name="itemId">The ItemId to find the price for.</param>
+        /// <returns>The price or null if item is not found.</returns>
+        /// <remarks>
+        /// Called:
+        /// http://[RetailServer]:8305/RetailServer/v1/api/PriceInquiry?ItemId=12345
+        /// </remarks>
+        public decimal Get(string itemId)
         {
-            var retVal = this.productManager.GetBarcode(new ScanInfo { EntryMethodType = BarcodeEntryMethodType.SingleScanned, ScanDataLabel = barcode },
-                QueryResultSettings.Default);
+            ThrowIf.NullOrWhiteSpace(itemId, "itemId");
 
-            return retVal;
+            var searchCriteria = new ProductSearchCriteria(this.CommerceIdentity.ChannelId)
+            {
+                SkipVariantExpansion = true,
+                DataLevel = CommerceEntityDataLevel.Minimal,
+                DownloadProductData = false,
+                IncludeProductsFromDescendantCategories = false,
+                ItemIds = new[] { new ProductLookupClause(itemId) }
+            };
+
+            var products = this.productManager.SearchProducts(searchCriteria, new QueryResultSettings(new PagingInfo(1, 0)));
+
+            if (products.Results.Count > 0)
+            {
+                return products.Results[0].AdjustedPrice;
+            }
+
+            return -1;
         }
     }
 }
