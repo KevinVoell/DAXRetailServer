@@ -1,21 +1,11 @@
-﻿/*
-SAMPLE CODE NOTICE
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Web.Http;
+using System.Composition;
+using Microsoft.Dynamics.Retail.RetailServerLibrary;
 
-THIS SAMPLE CODE IS MADE AVAILABLE AS IS.  MICROSOFT MAKES NO WARRANTIES, WHETHER EXPRESS OR IMPLIED, 
-OF FITNESS FOR A PARTICULAR PURPOSE, OF ACCURACY OR COMPLETENESS OF RESPONSES, OF RESULTS, OR CONDITIONS OF MERCHANTABILITY.  
-THE ENTIRE RISK OF THE USE OR THE RESULTS FROM THE USE OF THIS SAMPLE CODE REMAINS WITH THE USER.  
-NO TECHNICAL SUPPORT IS PROVIDED.  YOU MAY NOT DISTRIBUTE THIS CODE UNLESS YOU HAVE A LICENSE AGREEMENT WITH MICROSOFT THAT ALLOWS YOU TO DO SO.
-*/
-
-namespace Microsoft.Dynamics.RetailServer.Samples.Extensions
+namespace Retail.Server.Extensions.Example
 {
-    using System;
-    using System.Composition;
-    using System.Runtime.InteropServices;
-    using System.Web.Http;
-
-    using Microsoft.Dynamics.Retail.RetailServerLibrary;
-
     /// <summary>
     /// The extended web API config.
     /// </summary>
@@ -36,23 +26,17 @@ namespace Microsoft.Dynamics.RetailServer.Samples.Extensions
         {
             if (config == null)
             {
-                System.IO.File.AppendAllText(@"C:\temp\trace.log", "Config is null.");
                 throw new ArgumentNullException("config");
             }
 
-            //System.Threading.Thread.Sleep(1000 * 30);
-
             base.Register(config);
 
-            //config.Services.Add(typeof(IWebApiConfig), new ValuesController());
-
-            // Enables the web api non-OData routes mapping.
+            // Web API routes
             config.Routes.MapHttpRoute(
-            name: "API Default",
-            routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-
-            System.IO.File.AppendAllText(@"C:\temp\trace.log", "Finished Register on ExtendedWebApiConfig");
+                name: "DefaultApi",
+                routeTemplate: "V1/api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }
