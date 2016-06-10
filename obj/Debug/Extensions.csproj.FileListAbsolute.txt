@@ -1,9 +1,0 @@
-C:\Users\kvoell\Documents\Retail SDK CU8\RetailServer\References\Microsoft.Dynamics.RetailServer.Samples.Extensions.dll
-C:\Users\kvoell\Documents\Retail SDK CU8\RetailServer\References\Microsoft.Dynamics.RetailServer.Samples.Extensions.pdb
-C:\Users\kvoell\Documents\Retail SDK CU8\RetailServer\Samples\RetailServerExtensions\obj\Debug\Microsoft.Dynamics.RetailServer.Samples.Extensions.dll
-C:\Users\kvoell\Documents\Retail SDK CU8\RetailServer\Samples\RetailServerExtensions\obj\Debug\Microsoft.Dynamics.RetailServer.Samples.Extensions.pdb
-C:\Projects\In House\Retail Server\Samples\RetailServerExtensions\obj\Debug\Extensions.csprojResolveAssemblyReference.cache
-C:\Projects\In House\Retail Server\References\Retail.Server.Extensions.Example.dll
-C:\Projects\In House\Retail Server\References\Retail.Server.Extensions.Example.pdb
-C:\Projects\In House\Retail Server\Samples\RetailServerExtensions\obj\Debug\Retail.Server.Extensions.Example.dll
-C:\Projects\In House\Retail Server\Samples\RetailServerExtensions\obj\Debug\Retail.Server.Extensions.Example.pdb
