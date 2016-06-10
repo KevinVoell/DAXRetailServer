@@ -1,7 +1,11 @@
 ﻿using Microsoft.Dynamics.Commerce.Runtime;
+using Microsoft.Dynamics.Commerce.Runtime.Client;
+using Microsoft.Dynamics.Commerce.Runtime.Configuration;
+using Microsoft.Dynamics.Commerce.Runtime.Data;
 using Microsoft.Dynamics.Commerce.Runtime.DataModel;
 using Microsoft.Dynamics.Retail.RetailServerLibrary;
 using System.Runtime.InteropServices;
+using System.Web.Http;
 
 namespace Retail.Server.Extensions.Example.WebApiExtension
 {
@@ -11,15 +15,18 @@ namespace Retail.Server.Extensions.Example.WebApiExtension
     [ComVisible(false)]
     [ExtendedController("PriceInquiry")]
     [CommerceAuthorization(AllowedRetailRoles = new string[] { CommerceRoles.Anonymous }, CheckRetailOperation = false, DeviceTokenRequired = false)]
-    public class PriceInquiryController : RetailServerApiController
+    public class PriceInquiryController : ApiController
     {
+        protected CommerceIdentity CommerceIdentity;
+
         /// <summary>
         /// Default constructor
         /// </summary>
         public PriceInquiryController()
         {
             // Need to set the ChannelId explicitly
-            this.CommerceIdentity.ChannelId = 12345678;
+            this.CommerceIdentity = User.Identity as CommerceIdentity;
+            this.CommerceIdentity.ChannelId = 5637144662;
         }
 
         /// <summary>
@@ -44,7 +51,7 @@ namespace Retail.Server.Extensions.Example.WebApiExtension
                 ItemIds = new[] { new ProductLookupClause(itemId) }
             };
 
-            var products = this.productManager.SearchProducts(searchCriteria, new QueryResultSettings(new PagingInfo(1, 0)));
+            var products = GetProductManager().SearchProducts(searchCriteria, new QueryResultSettings(new PagingInfo(1, 0)));
 
             if (products.Results.Count > 0)
             {
@@ -52,6 +59,20 @@ namespace Retail.Server.Extensions.Example.WebApiExtension
             }
 
             return -1;
+        }
+
+        private ProductManager GetProductManager()
+        {
+            var connectionString = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+            var configurationSection = CommerceRuntimeConfigurationManager.GetConfigurationSection(CommerceRuntimeConfigurationManager.SectionName);
+            var configuration = new CommerceRuntimeConfiguration(configurationSection, connectionString);
+
+            var principal = new CommercePrincipal(this.CommerceIdentity);
+
+            var runtime = CommerceRuntime.Create(configuration, principal);
+            var pm = ProductManager.Create(runtime);
+
+            return pm;
         }
     }
 }
